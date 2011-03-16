@@ -1,0 +1,53 @@
+<h1><%= title %></h1>
+<p>Welcome to <%= title %></p>
+<script type="text/javascript">
+	$(function(){
+		
+		var lastSeen = -1;
+		
+		function updateMessages(data){
+			for(i = 0; i < data.length; i++){
+				$('#chat').append($('<li></li>').text(data[i].name + ": " + data[i].message));
+				lastSeen = data[i].id;
+			}
+		};
+		
+		function update(){
+			$.getJSON('chat?last=' + lastSeen, function(data){
+				updateMessages(data);
+				update();
+			});
+		}
+		
+		setTimeout(function(){
+			update();
+		}, 500);
+		
+		function post(){
+			var message = {
+				name : $('#user').val(),
+				message : $('#message').val()
+			};
+			$('#message').val('');
+			$.post('chat', {message : message, last : lastSeen}, function(data){}, 'json');
+		}
+		
+		$('#send').click(function () {
+			post();
+		});
+		
+		$('#message').keypress(function(event){
+			if(event.which == '13') {
+				event.preventDefault();
+				post();
+			}
+		});
+	});
+	
+</script>
+<div>
+	<ul id="chat"></ul>
+	<div id="controls">
+		<input type="text" id="message"/><input id="send" type="button" value="send"/>
+	</div>
+</div>

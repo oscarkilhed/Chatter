@@ -1,0 +1,12 @@
+<h1><%= title %></h1>
+<p>Welcome to <%= title %></p>
+<p>
+	<input type="text" id="name"/><input type="button" value="Get name" id="getname">
+	<script type="text/javascript">
+		$('#getname').click(function(){
+			$.post('/logOn', { name : $('#name').val() }, function(data){
+				alert(data);
+			});	
+		});
+	</script>
+</p>
